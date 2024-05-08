@@ -21,8 +21,7 @@ public class PlayneeTestingApplication {
 
 		String message = "Alpaca testing via IntelliJ"; // Messagem que será postada junto da foto. ( ou só o texto, cao seja postText)
 
-		String post_url = "https://graph.facebook.com/v19.0/281266601744759/feed";
-
+		//String post_url = "https://graph.facebook.com/v19.0/281266601744759/feed";
 		//String response = postText(message, token, rt, url);
 		//System.out.println(response);
 
@@ -40,7 +39,7 @@ public class PlayneeTestingApplication {
 		headers.setContentType(MediaType.APPLICATION_JSON);
 
 		String json = "{\n" +
-				"			\"\"message\":\"Alpaca Test - Rei Chikita\","+
+				"			\"message\":\"" + message + "\",\n"+
 				"           \"url\":\"" + imageURL + "\",\n" +
 				"           \"access_token\":\""+ token +"\"\n" +
 				"         }";

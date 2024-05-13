@@ -3,9 +3,6 @@ package AlpacaAPI.PlayneeTesting;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -14,53 +11,25 @@ public class PlayneeTestingApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(PlayneeTestingApplication.class, args);
-		TokenAlpacaAPI tokenAPI = new TokenAlpacaAPI();
-		String token = tokenAPI.APIcall(); // Coloque o token de acesso aqui. De preferência, usando um Venv, para manter o token seguro.
+		AlpacaAPISettings tokenAPI = new AlpacaAPISettings();  // Nossas configs
+		AlpacaAPIMetodos metodosAPI = new AlpacaAPIMetodos();  // Nossos metodos
+		String token = tokenAPI.APITokenCall();
 
-		RestTemplate rt = new RestTemplate();
+		RestTemplate rt = new RestTemplate(); // É um método do spring para facilitar requisições HTTP. Basicamente, é a parte do código mais importante, que faz
+												// Literalmente TUDO funcionar / Conectar-se a GraphAPI.
 
-		String message = "Alpaca testing via IntelliJ"; // Messagem que será postada junto da foto. ( ou só o texto, cao seja postText)
+		String message = "Teste de modularização parte 2 - só texto"; // Messagem que será postada junto da foto. ( ou só o texto, cao seja postText)
 
-		//String post_url = "https://graph.facebook.com/v19.0/281266601744759/feed";
-		//String response = postText(message, token, rt, url);
-		//System.out.println(response);
+		/*
+		 String post_url = tokenAPI.MessagePostURlCall();
+		 String responseText = metodosAPI.postText(message, token, rt, post_url);
+		 System.out.println(responseText);
+		*/
 
-		String imagePostURL = "https://graph.facebook.com/v19.0/281266601744759/photos"; // URL do metodo post da META
+		String imagePostURL = tokenAPI.ImagePostURLCall(); // URL do metodo post da META
+		String imageURL = "https://cdn.donmai.us/sample/73/0a/__makima_chainsaw_man_drawn_by_58_opal_00_58__sample-730ae0c383b08c6b1db7fdfe56c9917c.jpg"; // Coloque a URL da foto que quer. - tem que ser URL.
+		String response = metodosAPI.postImage(message,imageURL,token,rt,imagePostURL);
 
-		String imageURL = "https://i.pinimg.com/736x/91/ae/22/91ae22951ab3e7bda89e0fd63c072eba.jpg"; // Coloque a URL da foto que quer.
-
-		String res = postImage(message,imageURL, token, rt, imagePostURL);
-		System.out.println(res);
+		System.out.println(response); // Só para poder ver se funcionou ou não- Retorna o ID da postagem, para ser colocado no banco de dados.
 	}
-
-
-	private static String postImage(String message,String imageURL, String token, RestTemplate rt, String imagePostURL) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-
-		String json = "{\n" +
-				"			\"message\":\"" + message + "\",\n"+
-				"           \"url\":\"" + imageURL + "\",\n" +
-				"           \"access_token\":\""+ token +"\"\n" +
-				"         }";
-
-		HttpEntity<String> request = new HttpEntity<>(json,headers);
-
-		return rt.postForObject(imagePostURL, request, String.class);
-	}
-
-	private static String postText(String message, String token, RestTemplate rt, String url) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-
-		String json = "{\n" +
-				"           \"message\":\"" + message + "\",\n" +
-				"           \"access_token\":\""+ token +"\"\n" +
-				"         }";
-
-		HttpEntity<String> request = new HttpEntity<>(json,headers);
-
-		return rt.postForObject(url, request, String.class);
-	}
-
 }

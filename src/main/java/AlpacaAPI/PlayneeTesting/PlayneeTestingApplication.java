@@ -8,7 +8,6 @@ import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 public class PlayneeTestingApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(PlayneeTestingApplication.class, args);
 		AlpacaAPISettings tokenAPI = new AlpacaAPISettings();  // Nossas configs

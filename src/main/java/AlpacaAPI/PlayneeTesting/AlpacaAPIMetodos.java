@@ -19,7 +19,7 @@ public class AlpacaAPIMetodos {
 
         return rt.postForObject(imagePostURL, request, String.class);  // Retorna / Envia os dados - E caso positivo, vai mostrar o ID da postagem no sout alí em cima.
     }
-
+    /*
     public String postText(String message, String token, RestTemplate rt, String url) {  // Segue a mesma lógica do anterior, só que sem a imagem.
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -33,4 +33,5 @@ public class AlpacaAPIMetodos {
 
         return rt.postForObject(url, request, String.class);
     }
+     */
 }

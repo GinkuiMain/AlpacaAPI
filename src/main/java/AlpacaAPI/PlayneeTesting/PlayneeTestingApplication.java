@@ -1,34 +1,52 @@
 package AlpacaAPI.PlayneeTesting;
 
-
+import AlpacaAPI.PlayneeTesting.services.PostService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.client.RestTemplate;
 
-
 @SpringBootApplication
-public class PlayneeTestingApplication {
+public class PlayneeTestingApplication implements CommandLineRunner {
+
+	@Autowired
+	private PostService postService;
+
 	public static void main(String[] args) {
 		SpringApplication.run(PlayneeTestingApplication.class, args);
-		AlpacaAPISettings tokenAPI = new AlpacaAPISettings();  // Nossas configs
-		AlpacaAPIMetodos metodosAPI = new AlpacaAPIMetodos();  // Nossos metodos
+	}
+
+	@Override
+	public void run(String... args) throws Exception {
+		AlpacaAPISettings tokenAPI = new AlpacaAPISettings();
+		AlpacaAPIMetodos metodosAPI = new AlpacaAPIMetodos();
 		String token = tokenAPI.APITokenCall();
 
-		RestTemplate rt = new RestTemplate(); // É um método do spring para facilitar requisições HTTP. Basicamente, é a parte do código mais importante, que faz
-												// Literalmente TUDO funcionar / Conectar-se a GraphAPI.
+		RestTemplate rt = new RestTemplate();
 
-		String message = "Teste de modularização parte 2 - só texto"; // Messagem que será postada junto da foto. ( ou só o texto, cao seja postText)
+		String message = "{ Testando Postagem - Squad 14 | Vamos de Sabaton. 2 }";
 
-		/*
-		 String post_url = tokenAPI.MessagePostURlCall();
-		 String responseText = metodosAPI.postText(message, token, rt, post_url);
-		 System.out.println(responseText);
-		*/
+		String imagePostURL = tokenAPI.ImagePostURLCall();
+		String imageURL = "https://i.ytimg.com/vi/7lb-0h8TWaU/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLBziLZ6W31rD4hhnTENWYJU2cNRGg";
+		String response = metodosAPI.postImage(message, imageURL, token, rt, imagePostURL);
 
-		String imagePostURL = tokenAPI.ImagePostURLCall(); // URL do metodo post da META
-		String imageURL = "https://cdn.donmai.us/sample/73/0a/__makima_chainsaw_man_drawn_by_58_opal_00_58__sample-730ae0c383b08c6b1db7fdfe56c9917c.jpg"; // Coloque a URL da foto que quer. - tem que ser URL.
-		String response = metodosAPI.postImage(message,imageURL,token,rt,imagePostURL);
+		System.out.println("Response: " + response);
 
-		System.out.println(response); // Só para poder ver se funcionou ou não- Retorna o ID da postagem, para ser colocado no banco de dados.
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode responseJson = mapper.readTree(response);
+
+		if (responseJson.has("id") && responseJson.has("post_id")) {
+			String postId = responseJson.get("id").asText(); // Converte id para String
+			String post_id = responseJson.get("post_id").asText();
+
+			postService.savePost(postId, post_id); // Chama o método savePost com Strings
+		} else {
+			System.out.println("A resposta JSON não contém os campos esperados: id e post_id");
+		}
 	}
 }
+
+// Zuzu está cansado.

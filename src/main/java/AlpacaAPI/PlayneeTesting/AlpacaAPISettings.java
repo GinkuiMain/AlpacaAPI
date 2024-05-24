@@ -3,9 +3,9 @@ package AlpacaAPI.PlayneeTesting;
 public class AlpacaAPISettings {
 
     public String APITokenCall()  // Seu token de acesso da GraphAPI - Substitua ali.
-        {
-            return "TOKENDEACESSO";
-        }
+    {
+        return "TOKENDEACESSO";
+    }
 
     public String ImagePostURLCall()  // Use para postar imagens
     {                                        //COLOQUE SEU ID AQUI
